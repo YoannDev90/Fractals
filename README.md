@@ -12,12 +12,12 @@ Une application interactive multi-plateforme pour explorer et générer des frac
 
 Téléchargez la dernière version pour votre système d'exploitation :
 
-| Plateforme | Architecture | Téléchargement |
-|------------|--------------|----------------|
-| 🪟 **Windows** | x64 | [Fractals-win-x64.zip](https://github.com/votre-username/Fractals/releases) |
-| 🐧 **Linux** | x64 | [Fractals-linux-x64.zip](https://github.com/votre-username/Fractals/releases) |
-| 🍎 **macOS** | Intel (x64) | [Fractals-osx-x64.zip](https://github.com/votre-username/Fractals/releases) |
-| 🍎 **macOS** | Apple Silicon (ARM64) | [Fractals-osx-arm64.zip](https://github.com/votre-username/Fractals/releases) |
+| Plateforme | Architecture | Téléchargement                                                                                                      |
+|------------|--------------|---------------------------------------------------------------------------------------------------------------------|
+| 🪟 **Windows** | x64 | [Fractals-windows-x64.exe](https://github.com/YoannDev90/Fractals/releases/download/Fractals-v3/Fractals-linux-x64) |
+| 🐧 **Linux** | x64 | [Fractals-linux-x64](https://github.com/YoannDev90/Fractals/releases/download/Fractals-v3/Fractals-windows-x64.exe) |
+| 🍎 **macOS** | Intel (x64) | [Fractals-osx-x64.zip](https://github.com/YoannDev90/Fractals/releases/download/Fractals-v2/osx-x64.zip)            |
+| 🍎 **macOS** | Apple Silicon (ARM64) | [Fractals-osx-arm64.zip](https://github.com/YoannDev90/Fractals/releases/download/Fractals-v2/osx-arm64.zip)                                       |
 
 **Installation** :
 1. Téléchargez l'archive correspondant à votre système
