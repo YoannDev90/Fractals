@@ -17,11 +17,43 @@ namespace Fractals
     public partial class FractalView : UserControl
     {
         private double _viewZoom = 1.0;
-        private double _viewOffsetX;
-        private double _viewOffsetY;
+        private double _viewOffsetX = 0.0;
+        private double _viewOffsetY = 0.0;
         private int _maxIter = 300;
         private WriteableBitmap? _bitmap;
         private bool _isGenerating = true;
+        
+        // Système d'historique avec cache disque
+        private class FractalState
+        {
+            public string ImagePath { get; set; } = "";
+            public double FractalCenterX { get; set; }
+            public double FractalCenterY { get; set; }
+            public double FractalScale { get; set; }
+            public int MaxIter { get; set; }
+            public int ImageWidth { get; set; }
+            public int ImageHeight { get; set; }
+            public int QualityIndex { get; set; }
+            public double ViewZoom { get; set; }
+            public double ViewOffsetX { get; set; }
+            public double ViewOffsetY { get; set; }
+            public TimeSpan GenerationTime { get; set; }
+            public DateTime Timestamp { get; set; }
+        }
+        
+        private List<FractalState> _history = new List<FractalState>();
+        private int _currentHistoryIndex = -1;
+        private WriteableBitmap? _previousBitmap; // Image précédente en RAM
+        private FractalState? _previousState; // État précédent complet
+        private static readonly string HistoryPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "Fractals",
+            "History"
+        );
+        
+        // Gestion de la pause
+        private bool _isPaused = false;
+        private int _pausedAtLine = 0;
         
         // Paramètres de la fractale
         private double _fractalCenterX = -0.5;
@@ -175,12 +207,12 @@ namespace Fractals
             if (_isGenerating)
             {
                 if (statusText != null)
-                    statusText.Text = "En cours...";
+                    statusText.Text = _isPaused ? "En pause..." : "En cours...";
                 if (speedText != null)
                     speedText.Text = $"{_generationSpeed:F1} lignes/s";
                 
                 // Calcul du temps restant estimé
-                if (timeRemainingText != null && _generationSpeed > 0 && _currentLine > 0)
+                if (timeRemainingText != null && _generationSpeed > 0 && _currentLine > 0 && !_isPaused)
                 {
                     int remainingLines = _currentImageHeight - _currentLine;
                     double secondsRemaining = remainingLines / _generationSpeed;
@@ -194,7 +226,7 @@ namespace Fractals
                 }
                 else if (timeRemainingText != null)
                 {
-                    timeRemainingText.Text = "Temps restant: calcul...";
+                    timeRemainingText.Text = _isPaused ? "En pause" : "Temps restant: calcul...";
                 }
             }
             else
@@ -240,14 +272,27 @@ namespace Fractals
             Log($"Début génération fractale - Résolution: {_currentImageWidth}x{_currentImageHeight}, MaxIter: {_maxIter}, Centre: ({_fractalCenterX:F8}, {_fractalCenterY:F8}), Échelle: {_fractalScale:E2}");
             
             _isGenerating = true;
+            _isPaused = false;
             _generationStartTime = DateTime.Now;
             _currentLine = 0;
+            
             UpdateGenerationDisplay();
             UpdateQualityDisplay();
             UpdateZoomDisplay();
             UpdateCenterDisplay();
             
+            // Sauvegarder l'état actuel AVANT de créer le nouveau bitmap et AVANT de réinitialiser les paramètres
+            if (_bitmap != null)
+            {
+                SaveCurrentState();
+            }
+            
             _bitmap = new WriteableBitmap(new PixelSize(_currentImageWidth, _currentImageHeight), new Vector(96, 96), PixelFormat.Bgra8888, AlphaFormat.Opaque);
+            
+            // Réinitialiser les paramètres de vue APRÈS avoir sauvegardé l'état précédent
+            _viewZoom = 1.0;
+            _viewOffsetX = 0.0;
+            _viewOffsetY = 0.0;
             
             double scale = _fractalScale / Math.Min(_currentImageWidth, _currentImageHeight);
             double offsetX = _fractalCenterX - (_fractalScale * _currentImageWidth / _currentImageHeight) / 2;
@@ -257,6 +302,21 @@ namespace Fractals
             // Génération ligne par ligne
             for (int py = 0; py < _currentImageHeight; py++)
             {
+                // Gestion de la pause
+                while (_isPaused)
+                {
+                    _pausedAtLine = py;
+                    UpdateGenerationDisplay();
+                    await Task.Delay(100);
+                }
+                
+                // Vérification d'annulation (si l'utilisateur a appuyé sur X)
+                if (!_isGenerating)
+                {
+                    Log("Génération annulée par l'utilisateur");
+                    return;
+                }
+                
                 _currentLine = py;
                 
                 using (var lockedBitmap = _bitmap.Lock())
@@ -303,9 +363,13 @@ namespace Fractals
 
             _lastGenerationTime = DateTime.Now - _generationStartTime;
             _isGenerating = false;
+            _isPaused = false;
             UpdateGenerationDisplay();
             UpdateZoomDisplay();
             UpdateCenterDisplay();
+            
+            // Sauvegarder l'état dans l'historique
+            SaveStateToHistory();
             
             Log($"Génération terminée - Durée: {_lastGenerationTime.TotalSeconds:F2}s, Vitesse moyenne: {_currentImageHeight / _lastGenerationTime.TotalSeconds:F1} lignes/s");
         }
@@ -313,10 +377,35 @@ namespace Fractals
         protected override async void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
+            
+            // Gérer les touches C et X même pendant la génération
+            if (e.Key == Key.C && _isGenerating)
+            {
+                _isPaused = !_isPaused;
+                Log(_isPaused ? "Génération mise en pause" : "Génération reprise");
+                UpdateGenerationDisplay();
+                return;
+            }
+            
+            if (e.Key == Key.X && _isGenerating)
+            {
+                // Annuler la génération en cours et restaurer l'état précédent
+                CancelAndRestorePrevious();
+                return;
+            }
+            
             if (_isGenerating) return;
             
             switch (e.Key)
             {
+                case Key.Z:
+                    // Annuler (undo) - revenir en arrière dans l'historique
+                    await Undo();
+                    return;
+                case Key.Y:
+                    // Rétablir (redo) - avancer dans l'historique
+                    await Redo();
+                    return;
                 case Key.D1:
                 case Key.D2:
                 case Key.D3:
@@ -380,6 +469,263 @@ namespace Fractals
                     // Basculer la visibilité du panneau
                     TogglePanelVisibility();
                     return;
+            }
+        }
+        
+        private void CancelAndRestorePrevious()
+        {
+            if (_previousBitmap != null && _previousState != null)
+            {
+                Log("Annulation de la génération et restauration complète de l'état précédent");
+                
+                // Arrêter la génération en cours
+                _isGenerating = false;
+                _isPaused = false;
+                
+                // Restaurer l'image ET tous les paramètres
+                _bitmap = _previousBitmap;
+                _fractalCenterX = _previousState.FractalCenterX;
+                _fractalCenterY = _previousState.FractalCenterY;
+                _fractalScale = _previousState.FractalScale;
+                _maxIter = _previousState.MaxIter;
+                _currentImageWidth = _previousState.ImageWidth;
+                _currentImageHeight = _previousState.ImageHeight;
+                _currentQualityIndex = _previousState.QualityIndex;
+                _viewZoom = _previousState.ViewZoom;
+                _viewOffsetX = _previousState.ViewOffsetX;
+                _viewOffsetY = _previousState.ViewOffsetY;
+                _lastGenerationTime = _previousState.GenerationTime;
+                
+                // Mettre à jour l'affichage
+                UpdateGenerationDisplay();
+                UpdateQualityDisplay();
+                UpdateZoomDisplay();
+                UpdateCenterDisplay();
+                InvalidateVisual();
+                
+                Log($"État restauré: {_currentImageWidth}x{_currentImageHeight}, Centre ({_fractalCenterX:F8}, {_fractalCenterY:F8}), Échelle {_fractalScale:E2}");
+            }
+            else
+            {
+                Log("Aucun état précédent à restaurer");
+            }
+        }
+        
+        private void SaveCurrentState()
+        {
+            if (_bitmap == null) return;
+            
+            try
+            {
+                // Créer le dossier d'historique s'il n'existe pas
+                if (!Directory.Exists(HistoryPath))
+                {
+                    Directory.CreateDirectory(HistoryPath);
+                }
+                
+                // Sauvegarder l'image précédente en RAM
+                _previousBitmap = _bitmap;
+                
+                // Sauvegarder l'état complet
+                _previousState = new FractalState
+                {
+                    ImagePath = "",
+                    FractalCenterX = _fractalCenterX,
+                    FractalCenterY = _fractalCenterY,
+                    FractalScale = _fractalScale,
+                    MaxIter = _maxIter,
+                    ImageWidth = _currentImageWidth,
+                    ImageHeight = _currentImageHeight,
+                    QualityIndex = _currentQualityIndex,
+                    ViewZoom = _viewZoom,
+                    ViewOffsetX = _viewOffsetX,
+                    ViewOffsetY = _viewOffsetY,
+                    GenerationTime = _lastGenerationTime,
+                    Timestamp = DateTime.Now
+                };
+                
+                Log($"Image actuelle sauvegardée en RAM ({_currentImageWidth}x{_currentImageHeight})");
+            }
+            catch (Exception ex)
+            {
+                LogError("Erreur lors de la sauvegarde de l'état", ex);
+            }
+        }
+        
+        private void SaveStateToHistory()
+        {
+            if (_bitmap == null) return;
+            
+            try
+            {
+                // Créer le dossier d'historique s'il n'existe pas
+                if (!Directory.Exists(HistoryPath))
+                {
+                    Directory.CreateDirectory(HistoryPath);
+                }
+                
+                // Supprimer tous les états après l'index actuel (si on a fait des undo)
+                if (_currentHistoryIndex < _history.Count - 1)
+                {
+                    for (int i = _history.Count - 1; i > _currentHistoryIndex; i--)
+                    {
+                        // Supprimer le fichier sur le disque
+                        if (File.Exists(_history[i].ImagePath))
+                        {
+                            File.Delete(_history[i].ImagePath);
+                        }
+                        _history.RemoveAt(i);
+                    }
+                }
+                
+                // Créer un nouveau nom de fichier unique
+                var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");
+                var filename = $"fractal_{timestamp}_{_currentImageWidth}x{_currentImageHeight}.png";
+                var imagePath = Path.Combine(HistoryPath, filename);
+                
+                // Sauvegarder l'image sur le disque
+                SaveBitmap(_bitmap, imagePath);
+                
+                // Créer l'état et l'ajouter à l'historique
+                var state = new FractalState
+                {
+                    ImagePath = imagePath,
+                    FractalCenterX = _fractalCenterX,
+                    FractalCenterY = _fractalCenterY,
+                    FractalScale = _fractalScale,
+                    MaxIter = _maxIter,
+                    ImageWidth = _currentImageWidth,
+                    ImageHeight = _currentImageHeight,
+                    QualityIndex = _currentQualityIndex,
+                    ViewZoom = _viewZoom,
+                    ViewOffsetX = _viewOffsetX,
+                    ViewOffsetY = _viewOffsetY,
+                    GenerationTime = _lastGenerationTime,
+                    Timestamp = DateTime.Now
+                };
+                
+                _history.Add(state);
+                _currentHistoryIndex = _history.Count - 1;
+                
+                Log($"État sauvegardé dans l'historique ({_history.Count} états) : {filename}");
+                
+                // Nettoyer l'historique si trop d'éléments (garder max 50)
+                CleanupOldHistory(50);
+            }
+            catch (Exception ex)
+            {
+                LogError("Erreur lors de la sauvegarde de l'état dans l'historique", ex);
+            }
+        }
+        
+        private void CleanupOldHistory(int maxStates)
+        {
+            while (_history.Count > maxStates)
+            {
+                var oldestState = _history[0];
+                if (File.Exists(oldestState.ImagePath))
+                {
+                    File.Delete(oldestState.ImagePath);
+                }
+                _history.RemoveAt(0);
+                _currentHistoryIndex--;
+                Log($"Ancien état supprimé de l'historique");
+            }
+        }
+        
+        private async Task Undo()
+        {
+            if (_currentHistoryIndex > 0)
+            {
+                _currentHistoryIndex--;
+                await LoadStateFromHistory(_currentHistoryIndex);
+                Log($"Undo : position {_currentHistoryIndex + 1}/{_history.Count}");
+            }
+            else
+            {
+                Log("Impossible de revenir en arrière : début de l'historique atteint");
+            }
+        }
+        
+        private async Task Redo()
+        {
+            if (_currentHistoryIndex < _history.Count - 1)
+            {
+                _currentHistoryIndex++;
+                await LoadStateFromHistory(_currentHistoryIndex);
+                Log($"Redo : position {_currentHistoryIndex + 1}/{_history.Count}");
+            }
+            else
+            {
+                Log("Impossible d'avancer : fin de l'historique atteint");
+            }
+        }
+        
+        private async Task LoadStateFromHistory(int index)
+        {
+            if (index < 0 || index >= _history.Count) return;
+            
+            try
+            {
+                var state = _history[index];
+                
+                // Charger l'image depuis le disque
+                if (!File.Exists(state.ImagePath))
+                {
+                    Log($"Erreur : fichier introuvable {state.ImagePath}");
+                    return;
+                }
+                
+                // Charger l'image
+                using (var stream = File.OpenRead(state.ImagePath))
+                {
+                    _bitmap = WriteableBitmap.Decode(stream);
+                }
+                
+                // Restaurer les paramètres
+                _fractalCenterX = state.FractalCenterX;
+                _fractalCenterY = state.FractalCenterY;
+                _fractalScale = state.FractalScale;
+                _maxIter = state.MaxIter;
+                _currentImageWidth = state.ImageWidth;
+                _currentImageHeight = state.ImageHeight;
+                _currentQualityIndex = state.QualityIndex;
+                _viewZoom = state.ViewZoom;
+                _viewOffsetX = state.ViewOffsetX;
+                _viewOffsetY = state.ViewOffsetY;
+                _lastGenerationTime = state.GenerationTime;
+                
+                // Sauvegarder en RAM pour X ET sauvegarder l'état complet
+                _previousBitmap = _bitmap;
+                _previousState = new FractalState
+                {
+                    ImagePath = state.ImagePath,
+                    FractalCenterX = state.FractalCenterX,
+                    FractalCenterY = state.FractalCenterY,
+                    FractalScale = state.FractalScale,
+                    MaxIter = state.MaxIter,
+                    ImageWidth = state.ImageWidth,
+                    ImageHeight = state.ImageHeight,
+                    QualityIndex = state.QualityIndex,
+                    ViewZoom = state.ViewZoom,
+                    ViewOffsetX = state.ViewOffsetX,
+                    ViewOffsetY = state.ViewOffsetY,
+                    GenerationTime = state.GenerationTime,
+                    Timestamp = state.Timestamp
+                };
+                
+                // Mettre à jour l'affichage
+                UpdateGenerationDisplay();
+                UpdateQualityDisplay();
+                UpdateZoomDisplay();
+                UpdateCenterDisplay();
+                InvalidateVisual();
+                
+                Log($"État chargé depuis l'historique : {Path.GetFileName(state.ImagePath)}");
+            }
+            catch (Exception ex)
+            {
+                LogError("Erreur lors du chargement de l'état depuis l'historique", ex);
             }
         }
         
@@ -458,7 +804,7 @@ namespace Fractals
             {
                 double baseScaleX = Bounds.Width / _currentImageWidth;
                 double baseScaleY = Bounds.Height / _currentImageHeight;
-                double baseScale = Math.Max(baseScaleX, baseScaleY); // Utiliser Max pour remplir l'écran
+                double baseScale = Math.Min(baseScaleX, baseScaleY); // Utiliser Min pour que l'image soit aussi grande que possible
                 double finalScale = baseScale * _viewZoom;
                 double displayWidth = _currentImageWidth * finalScale;
                 double displayHeight = _currentImageHeight * finalScale;
@@ -532,7 +878,6 @@ namespace Fractals
                 try
                 {
                     Log($"Export de l'image vers: {file.Name}");
-                    // Sauvegarder le bitmap au chemin spécifié
                     await using var stream = await file.OpenWriteAsync();
                     bitmap.Save(stream);
                     Log($"Image exportée avec succès: {file.Name}");
@@ -576,11 +921,9 @@ namespace Fractals
             var timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
             var logMessage = $"[{timestamp}] [{level}] {message}";
             
-            // Écrire dans la console (visible uniquement dans l'IDE)
             Debug.WriteLine(logMessage);
             Console.WriteLine(logMessage);
             
-            // Écrire dans le fichier
             try
             {
                 _logWriter?.WriteLine(logMessage);

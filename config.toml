@@ -1,0 +1,98 @@
+# Configuration de l'application Fractals
+# Ce fichier permet de personnaliser tous les paramètres de l'application
+
+[general]
+# Qualité par défaut au démarrage (0-4)
+default_quality = 1
+# Nombre maximum d'états conservés dans l'historique
+max_history_states = 50
+# Afficher le panneau d'informations au démarrage
+show_panel_on_startup = true
+
+[fractale]
+# Position initiale du centre
+initial_center_x = -0.5
+initial_center_y = 0.0
+# Échelle initiale
+initial_scale = 3.0
+# Facteur de zoom (3.0 = zoom x3 à chaque fois)
+zoom_factor = 3.0
+
+[quality_presets]
+# Format: [[quality_presets.preset]]
+# name = "Nom"
+# width = largeur
+# height = hauteur
+# max_iterations = nombre d'itérations
+
+[[quality_presets.preset]]
+name = "Rapide"
+width = 1280
+height = 720
+max_iterations = 150
+
+[[quality_presets.preset]]
+name = "Normal"
+width = 1920
+height = 1080
+max_iterations = 300
+use_screen_resolution = true  # Utilise la résolution de l'écran si true
+
+[[quality_presets.preset]]
+name = "Haute"
+width = 2560
+height = 1440
+max_iterations = 500
+
+[[quality_presets.preset]]
+name = "Ultra"
+width = 3840
+height = 2160
+max_iterations = 1000
+
+[[quality_presets.preset]]
+name = "Extrême"
+width = 7680
+height = 4320
+max_iterations = 2000
+
+[rendering]
+# Rafraîchir l'affichage tous les N lignes pendant la génération
+refresh_every_n_lines = 5
+# Utiliser la génération progressive (affiche ligne par ligne)
+show_progress = true
+
+[colors]
+# Saturation HSV (0.0 - 1.0)
+saturation = 0.8
+# Valeur HSV (0.0 - 1.0)
+value = 1.0
+# Multiplicateur de teinte (plus grand = plus de cycles de couleurs)
+hue_multiplier = 3.0
+
+[paths]
+# Dossier pour les logs (vide = utilise le dossier par défaut)
+log_directory = ""
+# Dossier pour l'historique (vide = utilise le dossier par défaut)
+history_directory = ""
+# Dossier pour les exports (vide = utilise le dossier par défaut)
+export_directory = ""
+
+[logging]
+# Activer les logs
+enabled = true
+# Niveau de log minimum (DEBUG, INFO, WARNING, ERROR)
+level = "INFO"
+# Garder les logs pendant N jours (0 = infini)
+retention_days = 30
+
+[ui]
+# Police de caractères
+font_family = "Inter"
+# Taille de police par défaut
+font_size = 12
+# Couleur du panneau d'informations (ARGB en hexadécimal)
+panel_background = "#E6000000"
+# Couleur de surbrillance
+highlight_color = "#64C8FF"
+

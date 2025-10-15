@@ -141,6 +141,10 @@ Au lancement, l'application affiche l'ensemble de Mandelbrot en plein écran ave
 | `5` | Qualité Extrême (7680x4320, 2000 itérations) |
 | `N` | Régénérer la fractale actuelle |
 | `R` | Réinitialiser complètement la vue |
+| `C` | Mettre en pause / Reprendre la génération |
+| `X` | Annuler la génération en cours (affiche l'image en RAM) |
+| `Z` | Undo - Revenir à l'état précédent dans l'historique |
+| `Y` | Redo - Avancer dans l'historique |
 | `S` | Exporter l'image en PNG |
 | `H` | Masquer/Afficher le panneau d'informations |
 | `F11` | Basculer en mode plein écran |
@@ -288,4 +292,3 @@ Ce projet est distribué sous licence MIT. Voir le fichier `LICENSE` pour plus d
 ---
 
 *Explorez l'infini mathématique, un zoom à la fois.* 🌌
-

@@ -99,6 +99,10 @@
                         <TextBlock Text="+ / -     Zoom / Dézoom" FontSize="12" Foreground="#CCCCCC"/>
                         <TextBlock Text="N         Régénérer" FontSize="12" Foreground="#CCCCCC"/>
                         <TextBlock Text="R         Réinitialiser" FontSize="12" Foreground="#CCCCCC"/>
+                        <TextBlock Text="C         Pause/Reprendre" FontSize="12" Foreground="#CCCCCC"/>
+                        <TextBlock Text="X         Annuler génération" FontSize="12" Foreground="#CCCCCC"/>
+                        <TextBlock Text="Z         Undo (←)" FontSize="12" Foreground="#CCCCCC"/>
+                        <TextBlock Text="Y         Redo (→)" FontSize="12" Foreground="#CCCCCC"/>
                         <TextBlock Text="S         Exporter PNG" FontSize="12" Foreground="#CCCCCC"/>
                         <TextBlock Text="H         Masquer/Afficher" FontSize="12" Foreground="#CCCCCC"/>
                         <TextBlock Text="F11       Plein écran" FontSize="12" Foreground="#CCCCCC"/>
