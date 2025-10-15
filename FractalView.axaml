@@ -1,0 +1,110 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Fractals.FractalView">
+    <Grid>
+        <!-- Panneau d'informations flottant -->
+        <Border x:Name="InfoPanel"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Margin="20"
+                Background="#E6000000"
+                CornerRadius="12"
+                Padding="20"
+                Width="280">
+            <StackPanel Spacing="12">
+                <!-- Titre -->
+                <TextBlock Text="Mandelbrot" 
+                          FontSize="18" 
+                          FontWeight="Bold" 
+                          Foreground="White" 
+                          HorizontalAlignment="Center"
+                          Margin="0,0,0,15"/>
+                
+                <!-- Section Zoom -->
+                <StackPanel Spacing="5">
+                    <TextBlock Text="ZOOM" FontSize="10" Foreground="#888888" FontWeight="SemiBold" LetterSpacing="0.5"/>
+                    <TextBlock x:Name="ZoomText" 
+                              Text="x 1.00000" 
+                              FontSize="16" 
+                              Foreground="#64C8FF" 
+                              FontWeight="SemiBold"/>
+                </StackPanel>
+                
+                <!-- Section Centre -->
+                <StackPanel Spacing="5">
+                    <TextBlock Text="CENTRE" FontSize="10" Foreground="#888888" FontWeight="SemiBold" LetterSpacing="0.5"/>
+                    <TextBlock x:Name="CenterXText" 
+                              Text="-0.50000000" 
+                              FontSize="12" 
+                              Foreground="White"/>
+                    <TextBlock x:Name="CenterYText" 
+                              Text="0.00000000i" 
+                              FontSize="12" 
+                              Foreground="White"/>
+                </StackPanel>
+                
+                <!-- Section Curseur -->
+                <StackPanel Spacing="5">
+                    <TextBlock Text="CURSEUR" FontSize="10" Foreground="#888888" FontWeight="SemiBold" LetterSpacing="0.5"/>
+                    <TextBlock x:Name="CursorXText" 
+                              Text="0.00000000" 
+                              FontSize="12" 
+                              Foreground="White"/>
+                    <TextBlock x:Name="CursorYText" 
+                              Text="0.00000000i" 
+                              FontSize="12" 
+                              Foreground="White"/>
+                </StackPanel>
+                
+                <!-- Section Génération -->
+                <StackPanel Spacing="5">
+                    <TextBlock Text="GÉNÉRATION" FontSize="10" Foreground="#888888" FontWeight="SemiBold" LetterSpacing="0.5"/>
+                    <TextBlock x:Name="GenerationStatusText" 
+                              Text="En cours..." 
+                              FontSize="12" 
+                              Foreground="White"/>
+                    <TextBlock x:Name="GenerationSpeedText" 
+                              Text="0.0 lignes/s" 
+                              FontSize="12" 
+                              Foreground="White"/>
+                    <TextBlock x:Name="GenerationTimeRemainingText" 
+                              Text="Temps restant: --" 
+                              FontSize="12" 
+                              Foreground="#FFAA00"/>
+                    <TextBlock x:Name="GenerationResolutionText" 
+                              Text="1920x1080" 
+                              FontSize="12" 
+                              Foreground="White"/>
+                </StackPanel>
+                
+                <!-- Section Qualité -->
+                <StackPanel Spacing="5">
+                    <TextBlock Text="QUALITÉ (1-5)" FontSize="10" Foreground="#888888" FontWeight="SemiBold" LetterSpacing="0.5"/>
+                    <StackPanel x:Name="QualityList" Spacing="4">
+                        <TextBlock Text="1. Rapide (1280x720)" FontSize="12" Foreground="#B4B4B4"/>
+                        <TextBlock Text="2. Normal (1920x1080)" FontSize="12" Foreground="#64C8FF" FontWeight="SemiBold"/>
+                        <TextBlock Text="3. Haute (2560x1440)" FontSize="12" Foreground="#B4B4B4"/>
+                        <TextBlock Text="4. Ultra (3840x2160)" FontSize="12" Foreground="#B4B4B4"/>
+                        <TextBlock Text="5. Extrême (7680x4320)" FontSize="12" Foreground="#B4B4B4"/>
+                    </StackPanel>
+                </StackPanel>
+                
+                <!-- Séparateur -->
+                <Border Height="1" Background="#333333" Margin="0,8,0,8"/>
+                
+                <!-- Section Commandes -->
+                <StackPanel Spacing="5">
+                    <TextBlock Text="COMMANDES" FontSize="10" Foreground="#888888" FontWeight="SemiBold" LetterSpacing="0.5"/>
+                    <StackPanel Spacing="3">
+                        <TextBlock Text="+ / -     Zoom / Dézoom" FontSize="12" Foreground="#CCCCCC"/>
+                        <TextBlock Text="N         Régénérer" FontSize="12" Foreground="#CCCCCC"/>
+                        <TextBlock Text="R         Réinitialiser" FontSize="12" Foreground="#CCCCCC"/>
+                        <TextBlock Text="S         Exporter PNG" FontSize="12" Foreground="#CCCCCC"/>
+                        <TextBlock Text="H         Masquer/Afficher" FontSize="12" Foreground="#CCCCCC"/>
+                        <TextBlock Text="F11       Plein écran" FontSize="12" Foreground="#CCCCCC"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

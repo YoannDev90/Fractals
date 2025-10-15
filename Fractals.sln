@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fractals", "Fractals.csproj", "{C50A75BB-1B98-4B19-95FC-C678B03FC8AA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C50A75BB-1B98-4B19-95FC-C678B03FC8AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C50A75BB-1B98-4B19-95FC-C678B03FC8AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C50A75BB-1B98-4B19-95FC-C678B03FC8AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C50A75BB-1B98-4B19-95FC-C678B03FC8AA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
