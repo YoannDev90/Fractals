@@ -1,19 +1,42 @@
-# 🎨 Fractals - Explorateur de l'ensemble de Mandelbrot
+# 🎨 Fractals Explorer - Explorateur de Fractales Interactif
 
-Une application interactive multi-plateforme pour explorer et générer l'ensemble de Mandelbrot en haute résolution, développée avec Avalonia UI et .NET 9.
+Une application interactive multi-plateforme pour explorer et générer des fractales (Mandelbrot, Julia, Burning Ship, Tricorn, Newton) en haute résolution, développée avec Avalonia UI et .NET 9.
 
 ![Fractals](https://img.shields.io/badge/.NET-9.0-512BD4?style=flat-square&logo=dotnet)
 ![Avalonia](https://img.shields.io/badge/Avalonia-11.3.7-8B44AC?style=flat-square)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey?style=flat-square)
 
+## 📥 Téléchargement
+
+### Versions pré-compilées
+
+Téléchargez la dernière version pour votre système d'exploitation :
+
+| Plateforme | Architecture | Téléchargement |
+|------------|--------------|----------------|
+| 🪟 **Windows** | x64 | [Fractals-win-x64.zip](https://github.com/votre-username/Fractals/releases) |
+| 🐧 **Linux** | x64 | [Fractals-linux-x64.zip](https://github.com/votre-username/Fractals/releases) |
+| 🍎 **macOS** | Intel (x64) | [Fractals-osx-x64.zip](https://github.com/votre-username/Fractals/releases) |
+| 🍎 **macOS** | Apple Silicon (ARM64) | [Fractals-osx-arm64.zip](https://github.com/votre-username/Fractals/releases) |
+
+**Installation** :
+1. Téléchargez l'archive correspondant à votre système
+2. Extrayez le contenu
+3. Lancez l'exécutable `Fractals` (Linux/macOS) ou `Fractals.exe` (Windows)
+
+**Note pour macOS** : Au premier lancement, faites un clic droit → "Ouvrir" pour contourner la vérification Gatekeeper.
+
+**Note pour Linux** : Rendez l'exécutable avec `chmod +x Fractals` si nécessaire.
+
+---
+
 ## 📋 Table des matières
 
+- [Téléchargement](#-téléchargement)
 - [Fonctionnalités](#-fonctionnalités)
-- [Captures d'écran](#-captures-décran)
-- [Prérequis](#-prérequis)
-- [Installation](#-installation)
+- [Fractales disponibles](#-fractales-disponibles)
 - [Utilisation](#-utilisation)
-- [Raccourcis clavier](#-raccourcis-clavier)
+- [Raccourcis clavier](#️-raccourcis-clavier)
 - [Qualités prédéfinies](#-qualités-prédéfinies)
 - [Architecture technique](#-architecture-technique)
 - [Compilation](#-compilation)
@@ -22,273 +45,283 @@ Une application interactive multi-plateforme pour explorer et générer l'ensemb
 
 ## ✨ Fonctionnalités
 
+### 🎯 Fractales multiples
+- **Mandelbrot** : La fractale classique et iconique
+- **Julia Set** : Ensemble de Julia avec paramètres personnalisables
+- **Burning Ship** : Variante du Mandelbrot avec valeurs absolues
+- **Tricorn** : Mandelbrot avec conjugaison complexe
+- **Newton Fractal** : Basé sur la méthode de Newton-Raphson
+
 ### 🔍 Exploration interactive
-- **Zoom infini** : Explorez l'ensemble de Mandelbrot avec un zoom quasi-illimité
+- **Zoom infini** : Explorez les fractales avec un zoom quasi-illimité
 - **Navigation en temps réel** : Suivez les coordonnées complexes sous votre curseur
-- **Zoom centré sur le curseur** : Zoomez directement sur la position de votre souris
+- **Zoom centré sur le curseur** : Zoomez directement sur la position de votre souris (touches + et -)
 - **Génération progressive** : Visualisez la fractale en cours de génération ligne par ligne
+- **Pause/Reprise** : Mettez en pause la génération (touche C)
+- **Annulation rapide** : Annulez une génération en cours (touche X)
 
 ### 🎨 Rendu de qualité
-- **5 niveaux de qualité** prédéfinis (de 720p à 8K)
+- **5 niveaux de qualité** prédéfinis (de 720p à 8K - 7680x4320)
+- **5 niveaux d'itérations** (de 100 à 2000 itérations)
 - **Coloration lissée** (smooth coloring) pour des dégradés fluides
 - **Algorithme optimisé** utilisant du code unsafe pour des performances maximales
 - **Adaptation automatique** à la résolution de votre écran
 
-### 💾 Export et personnalisation
+### 💾 Historique et export
+- **Historique Z/Y** : Navigation Undo/Redo dans vos explorations (jusqu'à 50 états)
 - **Export PNG haute résolution** avec dialogue de sauvegarde
 - **Nommage automatique** incluant la date, l'heure et la résolution
-- **Interface masquable** pour des captures d'écran sans éléments d'UI
-- **Mode plein écran** pour une immersion totale
+- **Sauvegarde automatique** des images dans l'historique
 
-### 📊 Informations en temps réel
-- **Niveau de zoom** affiché avec précision
-- **Coordonnées du centre** de la vue actuelle
-- **Coordonnées sous le curseur** en temps réel
-- **Statistiques de génération** :
-  - Vitesse de génération (lignes/seconde)
-  - Temps de génération total
-  - Temps restant estimé
-  - Résolution actuelle
+### 🎛️ Interface moderne
+- **Panneau flottant** avec design glass morphism moderne
+- **Affichage en temps réel** :
+  - Niveau de zoom avec précision
+  - Coordonnées du centre et du curseur
+  - Statistiques de génération (vitesse, temps restant)
+  - Type de fractale actif
+  - Qualité et itérations sélectionnées
+- **Interface masquable** (touche H) pour des captures d'écran sans éléments d'UI
+- **Mode plein écran** (F11) pour une immersion totale
 
 ### 📝 Logging complet
-- **Fichiers journaux** automatiques dans `~/.local/share/Fractals/` (Linux) ou `%LOCALAPPDATA%\Fractals\` (Windows)
+- **Fichiers journaux** automatiques dans `~/.local/share/Fractals/` (Linux/macOS) ou `%LOCALAPPDATA%\Fractals\` (Windows)
 - **Horodatage précis** au milliseconde près
 - **Traçabilité complète** des actions utilisateur et des générations
 
-## 📸 Captures d'écran
+## 🌀 Fractales disponibles
 
-*L'application affiche un panneau d'informations élégant avec fond semi-transparent sur fond noir, offrant toutes les informations nécessaires pour l'exploration.*
-
-## 🔧 Prérequis
-
-- **.NET 9.0 SDK** ou ultérieur
-- **Système d'exploitation** : Windows, Linux ou macOS
-- **Résolution recommandée** : 1920x1080 ou supérieure
-
-## 📥 Installation
-
-### Depuis les sources
-
-1. **Clonez le dépôt** :
-```bash
-git clone https://github.com/votre-username/Fractals.git
-cd Fractals
-```
-
-2. **Restaurez les dépendances** :
-```bash
-dotnet restore
-```
-
-3. **Compilez le projet** :
-```bash
-dotnet build
-```
-
-4. **Lancez l'application** :
-```bash
-dotnet run
-```
-
-### Compilation pour la distribution
-
-**Windows (x64)** :
-```bash
-dotnet publish -c Release -r win-x64 --self-contained
-```
-
-**Linux (x64)** :
-```bash
-dotnet publish -c Release -r linux-x64 --self-contained
-```
-
-**macOS (ARM64)** :
-```bash
-dotnet publish -c Release -r osx-arm64 --self-contained
-```
-
-Les exécutables seront disponibles dans `bin/Release/net9.0/{runtime}/publish/`.
+| Touche | Fractale | Description |
+|--------|----------|-------------|
+| **F1** | Mandelbrot | La fractale classique, centrée sur (-0.5, 0) |
+| **F2** | Julia Set | Ensemble de Julia avec paramètres c = -0.7 + 0.27015i |
+| **F3** | Burning Ship | Variante avec abs() appliqué aux coordonnées |
+| **F4** | Tricorn | Mandelbrot avec conjugaison complexe |
+| **F5** | Newton Fractal | Basé sur z³ - 1 = 0 avec méthode de Newton |
 
 ## 🎮 Utilisation
 
-Au lancement, l'application affiche l'ensemble de Mandelbrot en plein écran avec un panneau d'informations sur la gauche.
+### Premier lancement
 
-### Navigation de base
+1. **Lancez l'application** : L'application démarre automatiquement avec une génération Mandelbrot
+2. **Attendez la génération** : La fractale se génère progressivement (vous pouvez voir la progression)
+3. **Explorez** : Utilisez les touches + et - pour zoomer/dézoomer sur la position du curseur
+4. **Changez de fractale** : Appuyez sur F1-F5 pour changer de type de fractale
+5. **Ajustez la qualité** : Appuyez sur Q+1 à Q+5 pour changer la résolution
+6. **Ajustez les itérations** : Appuyez sur I+1 à I+5 pour changer le niveau de détail
 
-1. **Déplacez votre souris** sur la fractale pour voir les coordonnées complexes
-2. **Appuyez sur `+`** pour zoomer sur la position du curseur
-3. **Appuyez sur `-`** pour dézoomer
-4. **Appuyez sur `R`** pour réinitialiser la vue
+### Exploration avancée
 
-### Export d'images
-
-1. Naviguez vers la zone souhaitée
-2. Choisissez la qualité désirée (touches `1-5`)
-3. Attendez la fin de la génération
-4. Appuyez sur `S` pour ouvrir le dialogue de sauvegarde
-5. Choisissez l'emplacement et le nom du fichier
+- **Zoom précis** : Placez votre curseur sur une zone intéressante et appuyez sur +
+- **Historique** : Utilisez Z (undo) et Y (redo) pour naviguer dans votre historique
+- **Pause** : Appuyez sur C pour mettre en pause une génération longue
+- **Annulation** : Appuyez sur X pour annuler et revenir à l'état précédent
+- **Export** : Appuyez sur S pour sauvegarder l'image actuelle en PNG
 
 ## ⌨️ Raccourcis clavier
 
+### Navigation et fractales
 | Touche | Action |
 |--------|--------|
-| `+` / `=` | Zoom x3 sur la position du curseur |
-| `-` / `_` | Dézoom ÷3 sur la position du curseur |
-| `1` | Qualité Rapide (1280x720, 150 itérations) |
-| `2` | Qualité Normal (résolution écran, 300 itérations) |
-| `3` | Qualité Haute (2560x1440, 500 itérations) |
-| `4` | Qualité Ultra (3840x2160, 1000 itérations) |
-| `5` | Qualité Extrême (7680x4320, 2000 itérations) |
-| `N` | Régénérer la fractale actuelle |
-| `R` | Réinitialiser complètement la vue |
-| `C` | Mettre en pause / Reprendre la génération |
-| `X` | Annuler la génération en cours (affiche l'image en RAM) |
-| `Z` | Undo - Revenir à l'état précédent dans l'historique |
-| `Y` | Redo - Avancer dans l'historique |
-| `S` | Exporter l'image en PNG |
-| `H` | Masquer/Afficher le panneau d'informations |
-| `F11` | Basculer en mode plein écran |
+| **F1-F5** | Changer le type de fractale (Mandelbrot, Julia, Burning Ship, Tricorn, Newton) |
+| **+ / -** | Zoom in / Zoom out (centré sur le curseur) |
+| **R** | Réinitialiser la vue (retour à la position initiale) |
 
-## 🎯 Qualités prédéfinies
+### Qualité et rendu
+| Touche | Action |
+|--------|--------|
+| **Q + 1-5** | Changer la qualité (résolution) |
+| **I + 1-5** | Changer le nombre d'itérations |
+| **N** | Régénérer manuellement la fractale |
 
-| Niveau | Nom | Résolution | Itérations max | Temps estimé* |
-|--------|-----|------------|----------------|---------------|
-| 1 | Rapide | 1280×720 | 150 | ~1s |
-| 2 | Normal | Écran natif | 300 | ~3s |
-| 3 | Haute | 2560×1440 | 500 | ~8s |
-| 4 | Ultra | 3840×2160 | 1000 | ~25s |
-| 5 | Extrême | 7680×4320 | 2000 | ~2min |
+### Contrôles de génération
+| Touche | Action |
+|--------|--------|
+| **C** | Pause / Reprendre la génération |
+| **X** | Annuler la génération et revenir à l'état précédent |
 
-*_Les temps sont approximatifs et dépendent de votre processeur et du niveau de zoom._
+### Historique et sauvegarde
+| Touche | Action |
+|--------|--------|
+| **Z** | Undo (revenir en arrière dans l'historique) |
+| **Y** | Redo (avancer dans l'historique) |
+| **S** | Sauvegarder l'image actuelle (PNG) |
 
-### Choix de la qualité
+### Interface
+| Touche | Action |
+|--------|--------|
+| **H** | Masquer/Afficher le panneau d'informations |
+| **F11** | Basculer en mode plein écran |
 
-- **Exploration rapide** : Utilisez les qualités 1-2 pour naviguer rapidement
-- **Exports de qualité** : Utilisez les qualités 3-5 pour des images haute définition
-- **Zoom extrême** : Plus vous zoomez, plus il faut d'itérations (qualités supérieures)
+## 📐 Qualités prédéfinies
+
+| Index | Nom | Résolution | Raccourci |
+|-------|-----|------------|-----------|
+| 1 | **Rapide** | 1280 x 720 | Q+1 |
+| 2 | **Normal** | Résolution écran | Q+2 |
+| 3 | **Haute** | 2560 x 1440 | Q+3 |
+| 4 | **Ultra** | 3840 x 2160 (4K) | Q+4 |
+| 5 | **Extrême** | 7680 x 4320 (8K) | Q+5 |
+
+## 🔄 Niveaux d'itérations
+
+| Index | Nom | Itérations | Raccourci | Temps estimé (1080p) |
+|-------|-----|------------|-----------|---------------------|
+| 1 | **Très rapide** | 100 | I+1 | ~0.5s |
+| 2 | **Rapide** | 300 | I+2 | ~1.5s |
+| 3 | **Normal** | 500 | I+3 | ~2.5s |
+| 4 | **Détaillé** | 1000 | I+4 | ~5s |
+| 5 | **Très détaillé** | 2000 | I+5 | ~10s |
+
+*Les temps sont indicatifs et varient selon votre processeur.*
 
 ## 🏗️ Architecture technique
+
+### Technologies utilisées
+
+- **.NET 9.0** : Framework moderne et performant
+- **Avalonia UI 11.3.7** : Interface utilisateur multi-plateforme
+- **C# 12** : Langage avec code unsafe pour optimisation
+- **SkiaSharp** : Moteur de rendu graphique
 
 ### Structure du projet
 
 ```
 Fractals/
-├── Program.cs              # Point d'entrée de l'application
-├── App.axaml              # Configuration de l'application Avalonia
-├── App.axaml.cs
-├── MainWindow.axaml       # Fenêtre principale
-├── MainWindow.axaml.cs
-├── FractalView.axaml      # Vue de la fractale et panneau d'infos
-├── FractalView.axaml.cs   # Logique de génération et d'interaction
-├── Fractals.csproj        # Configuration du projet
-└── app.manifest           # Manifeste Windows
+├── FractalView.axaml(.cs)        # Interface utilisateur principale
+├── FractalCalculator.cs          # Algorithmes de calcul des fractales
+├── FractalColorizer.cs           # Système de coloration
+├── FractalHistory.cs             # Gestion de l'historique (Undo/Redo)
+├── FractalLogger.cs              # Système de logging
+├── FractalModels.cs              # Modèles de données
+├── FractalPanelManager.cs        # Gestion de l'affichage du panneau
+├── FractalPresetManager.cs       # Gestion des préréglages
+└── AppConfig.cs                  # Configuration TOML (future)
 ```
 
-### Technologies utilisées
+### Optimisations
 
-- **Framework** : .NET 9.0
-- **UI Framework** : Avalonia UI 11.3.7
-- **Langage** : C# 12 avec code unsafe pour les performances
-- **Rendu** : WriteableBitmap avec manipulation directe des pixels
-- **Threading** : async/await avec Dispatcher pour l'UI
+- **Code unsafe** : Accès direct à la mémoire pour manipulation rapide des pixels
+- **Génération asynchrone** : L'UI reste responsive pendant les calculs
+- **Rafraîchissement progressif** : Affichage tous les 5 lignes pour feedback visuel
+- **Calcul optimisé** : Algorithme d'échappement optimisé pour chaque type de fractale
+- **Smooth coloring** : Interpolation logarithmique pour des couleurs fluides
 
-### Algorithme de génération
+## 🛠️ Compilation
 
-L'application utilise l'**algorithme d'échappement standard** pour l'ensemble de Mandelbrot :
+### Prérequis
+- **.NET 9.0 SDK** : [Télécharger](https://dotnet.microsoft.com/download/dotnet/9.0)
 
-```
-Pour chaque pixel (px, py) :
-    1. Convertir en coordonnées complexes (x0, y0)
-    2. Itérer : z(n+1) = z(n)² + c
-    3. Compter les itérations jusqu'à |z| > 2
-    4. Appliquer le smooth coloring
-    5. Convertir en couleur HSV → RGB
-```
-
-**Optimisations** :
-- Code unsafe avec pointeurs pour accès direct aux pixels
-- Génération ligne par ligne pour affichage progressif
-- Calculs en double précision pour le zoom profond
-
-### Système de coloration
-
-L'application utilise un **algorithme de coloration lissée** (smooth coloring) pour éviter les bandes de couleur :
-
-```csharp
-smooth = iter + 1 - log(log(|z|)) / log(2)
-hue = 360° × (smooth / maxIter × 3) mod 360°
-```
-
-Conversion **HSV → RGB** pour des dégradés arc-en-ciel fluides.
-
-## 🔨 Compilation
-
-### Configuration Release
+### Depuis les sources
 
 ```bash
-dotnet build -c Release
+# Cloner le dépôt
+git clone https://github.com/votre-username/Fractals.git
+cd Fractals
+
+# Restaurer les dépendances
+dotnet restore
+
+# Compiler
+dotnet build
+
+# Lancer
+dotnet run
 ```
 
-### Optimisations activées
+### Publication pour distribution
 
-- `AllowUnsafeBlocks` : Autorise le code unsafe pour les performances
-- `BuiltInComInteropSupport` : Support COM natif
-- Compilation AOT possible pour démarrage plus rapide
+**Windows (x64)** :
+```bash
+dotnet publish -c Release \
+  -r win-x64 \
+  --self-contained true \
+  /p:PublishSingleFile=true \
+  /p:IncludeNativeLibrariesForSelfExtract=true \
+  /p:PublishTrimmed=true \
+  /p:EnableCompressionInSingleFile=true \
+  /p:DebuggerSupport=false \
+  /p:DebugType=None \
+  -o ./publish/win-x64
+```
 
-### Débogage
+**Linux (x64)** :
+```bash
+dotnet publish -c Release \
+  -r linux-x64 \
+  --self-contained true \
+  /p:PublishSingleFile=true \
+  /p:IncludeNativeLibrariesForSelfExtract=true \
+  /p:PublishTrimmed=true \
+  /p:EnableCompressionInSingleFile=true \
+  /p:DebuggerSupport=false \
+  /p:DebugType=None \
+  -o ./publish/linux-x64
+```
 
-Le mode Debug inclut Avalonia.Diagnostics pour l'inspection de l'UI en temps réel.
+**macOS Intel (x64)** :
+```bash
+dotnet publish -c Release \
+  -r osx-x64 \
+  --self-contained true \
+  /p:PublishSingleFile=true \
+  /p:IncludeNativeLibrariesForSelfExtract=true \
+  /p:PublishTrimmed=true \
+  /p:EnableCompressionInSingleFile=true \
+  /p:DebuggerSupport=false \
+  /p:DebugType=None \
+  -o ./publish/osx-x64
+```
+
+**macOS Apple Silicon (ARM64)** :
+```bash
+dotnet publish -c Release \
+  -r osx-arm64 \
+  --self-contained true \
+  /p:PublishSingleFile=true \
+  /p:IncludeNativeLibrariesForSelfExtract=true \
+  /p:PublishTrimmed=true \
+  /p:EnableCompressionInSingleFile=true \
+  /p:DebuggerSupport=false \
+  /p:DebugType=None \
+  -o ./publish/osx-arm64
+```
+
+Les exécutables optimisés seront générés dans `./publish/<platform>/`
 
 ## 🤝 Contribution
 
-Les contributions sont les bienvenues ! Voici comment vous pouvez aider :
+Les contributions sont les bienvenues ! N'hésitez pas à :
 
 1. **Fork** le projet
-2. Créez une **branche** pour votre fonctionnalité (`git checkout -b feature/AmazingFeature`)
-3. **Committez** vos changements (`git commit -m 'Add some AmazingFeature'`)
-4. **Pushez** vers la branche (`git push origin feature/AmazingFeature`)
-5. Ouvrez une **Pull Request**
+2. Créer une **branche** pour votre fonctionnalité (`git checkout -b feature/AmazingFeature`)
+3. **Commit** vos changements (`git commit -m 'Add some AmazingFeature'`)
+4. **Push** vers la branche (`git push origin feature/AmazingFeature`)
+5. Ouvrir une **Pull Request**
 
-### Idées d'améliorations
+### Idées de fonctionnalités futures
 
-- [ ] Support d'autres fractales (Julia, Burning Ship, etc.)
-- [ ] Palette de couleurs personnalisable
-- [ ] Génération multi-threadée (parallélisation)
-- [ ] Historique de navigation (undo/redo)
-- [ ] Bookmarks pour sauvegarder des positions intéressantes
-- [ ] Animation de zoom automatique
-- [ ] Support GPU avec shaders (OpenGL/Vulkan)
-- [ ] Mode vidéo pour exporter des animations
+- [ ] Paramètres Julia personnalisables via l'interface
+- [ ] Plus de schémas de couleurs
+- [ ] Export en résolutions personnalisées
+- [ ] Animation de zoom
+- [ ] Sauvegarde/chargement de positions favorites
+- [ ] Support du zoom à la molette
+- [ ] Drag & drop pour déplacer la vue
+- [ ] Mode "deep zoom" avec précision arbitraire
 
 ## 📄 Licence
 
-Ce projet est distribué sous licence MIT. Voir le fichier `LICENSE` pour plus d'informations.
-
-## 👤 Auteur
-
-**Yoann**
+Ce projet est sous licence MIT - voir le fichier `LICENSE` pour plus de détails.
 
 ## 🙏 Remerciements
 
-- **Avalonia UI** pour le framework multi-plateforme
-- **Benoît Mandelbrot** pour la découverte de cet ensemble mathématique fascinant
-- La communauté open-source pour l'inspiration
+- **Avalonia Team** pour le framework UI multiplateforme
+- **Communauté .NET** pour l'écosystème riche
+- **Benoit Mandelbrot** pour la découverte de ces magnifiques fractales
 
 ---
 
-### 📊 Statistiques du projet
+**Développé avec ❤️ en C# et Avalonia**
 
-- **Langage principal** : C#
-- **Lignes de code** : ~600
-- **Dépendances** : 4 packages NuGet
-- **Plateformes supportées** : 3 (Windows, Linux, macOS)
-
-### 🔗 Liens utiles
-
-- [Documentation Avalonia](https://docs.avaloniaui.net/)
-- [Ensemble de Mandelbrot - Wikipedia](https://fr.wikipedia.org/wiki/Ensemble_de_Mandelbrot)
-- [.NET Documentation](https://docs.microsoft.com/dotnet/)
-
----
-
-*Explorez l'infini mathématique, un zoom à la fois.* 🌌
+*Explorez l'infini, une fractale à la fois.*
