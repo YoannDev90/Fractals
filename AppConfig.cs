@@ -6,15 +6,6 @@ using Tomlyn.Model;
 
 namespace Fractals
 {
-    public class QualityPreset
-    {
-        public string Name { get; set; } = "Normal";
-        public int Width { get; set; } = 1920;
-        public int Height { get; set; } = 1080;
-        public int MaxIterations { get; set; } = 300;
-        public bool UseScreenResolution { get; set; } = false;
-    }
-
     public class AppConfig
     {
         // Singleton
@@ -240,4 +231,3 @@ namespace Fractals
         }
     }
 }
-

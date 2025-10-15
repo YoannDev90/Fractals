@@ -2,113 +2,293 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Fractals.FractalView">
     <Grid>
-        <!-- Panneau d'informations flottant -->
+        <!-- Panneau d'informations flottant moderne -->
         <Border x:Name="InfoPanel"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
-                Margin="20"
-                Background="#E6000000"
-                CornerRadius="12"
-                Padding="20"
-                Width="280">
-            <StackPanel Spacing="12">
-                <!-- Titre -->
-                <TextBlock Text="Mandelbrot" 
-                          FontSize="18" 
-                          FontWeight="Bold" 
-                          Foreground="White" 
-                          HorizontalAlignment="Center"
-                          Margin="0,0,0,15"/>
-                
-                <!-- Section Zoom -->
-                <StackPanel Spacing="5">
-                    <TextBlock Text="ZOOM" FontSize="10" Foreground="#888888" FontWeight="SemiBold" LetterSpacing="0.5"/>
-                    <TextBlock x:Name="ZoomText" 
-                              Text="x 1.00000" 
-                              FontSize="16" 
-                              Foreground="#64C8FF" 
-                              FontWeight="SemiBold"/>
-                </StackPanel>
-                
-                <!-- Section Centre -->
-                <StackPanel Spacing="5">
-                    <TextBlock Text="CENTRE" FontSize="10" Foreground="#888888" FontWeight="SemiBold" LetterSpacing="0.5"/>
-                    <TextBlock x:Name="CenterXText" 
-                              Text="-0.50000000" 
-                              FontSize="12" 
-                              Foreground="White"/>
-                    <TextBlock x:Name="CenterYText" 
-                              Text="0.00000000i" 
-                              FontSize="12" 
-                              Foreground="White"/>
-                </StackPanel>
-                
-                <!-- Section Curseur -->
-                <StackPanel Spacing="5">
-                    <TextBlock Text="CURSEUR" FontSize="10" Foreground="#888888" FontWeight="SemiBold" LetterSpacing="0.5"/>
-                    <TextBlock x:Name="CursorXText" 
-                              Text="0.00000000" 
-                              FontSize="12" 
-                              Foreground="White"/>
-                    <TextBlock x:Name="CursorYText" 
-                              Text="0.00000000i" 
-                              FontSize="12" 
-                              Foreground="White"/>
-                </StackPanel>
-                
-                <!-- Section Génération -->
-                <StackPanel Spacing="5">
-                    <TextBlock Text="GÉNÉRATION" FontSize="10" Foreground="#888888" FontWeight="SemiBold" LetterSpacing="0.5"/>
-                    <TextBlock x:Name="GenerationStatusText" 
-                              Text="En cours..." 
-                              FontSize="12" 
-                              Foreground="White"/>
-                    <TextBlock x:Name="GenerationSpeedText" 
-                              Text="0.0 lignes/s" 
-                              FontSize="12" 
-                              Foreground="White"/>
-                    <TextBlock x:Name="GenerationTimeRemainingText" 
-                              Text="Temps restant: --" 
-                              FontSize="12" 
-                              Foreground="#FFAA00"/>
-                    <TextBlock x:Name="GenerationResolutionText" 
-                              Text="1920x1080" 
-                              FontSize="12" 
-                              Foreground="White"/>
-                </StackPanel>
-                
-                <!-- Section Qualité -->
-                <StackPanel Spacing="5">
-                    <TextBlock Text="QUALITÉ (1-5)" FontSize="10" Foreground="#888888" FontWeight="SemiBold" LetterSpacing="0.5"/>
-                    <StackPanel x:Name="QualityList" Spacing="4">
-                        <TextBlock Text="1. Rapide (1280x720)" FontSize="12" Foreground="#B4B4B4"/>
-                        <TextBlock Text="2. Normal (1920x1080)" FontSize="12" Foreground="#64C8FF" FontWeight="SemiBold"/>
-                        <TextBlock Text="3. Haute (2560x1440)" FontSize="12" Foreground="#B4B4B4"/>
-                        <TextBlock Text="4. Ultra (3840x2160)" FontSize="12" Foreground="#B4B4B4"/>
-                        <TextBlock Text="5. Extrême (7680x4320)" FontSize="12" Foreground="#B4B4B4"/>
+                Margin="30"
+                CornerRadius="20"
+                Width="320"
+                BoxShadow="0 8 32 #80000000">
+            <!-- Fond avec dégradé -->
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                    <GradientStop Color="#F0000000" Offset="0"/>
+                    <GradientStop Color="#E0000000" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            
+            <!-- Bordure subtile -->
+            <Border BorderBrush="#30FFFFFF" 
+                    BorderThickness="1" 
+                    CornerRadius="20"
+                    Padding="25">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="900">
+                    <StackPanel Spacing="20">
+                        <!-- En-tête avec titre de la fractale -->
+                        <Border Background="#20FFFFFF" 
+                                CornerRadius="12" 
+                                Padding="15,12">
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="FRACTALE ACTIVE" 
+                                          FontSize="9" 
+                                          Foreground="#80FFFFFF" 
+                                          FontWeight="Bold" 
+                                          LetterSpacing="1"/>
+                                <TextBlock x:Name="FractalTypeText"
+                                          Text="Mandelbrot" 
+                                          FontSize="22" 
+                                          FontWeight="Bold" 
+                                          Foreground="#64C8FF"/>
+                            </StackPanel>
+                        </Border>
+                        
+                        <!-- Fractales disponibles -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="TYPE DE FRACTALE" 
+                                      FontSize="9" 
+                                      Foreground="#80FFFFFF" 
+                                      FontWeight="Bold" 
+                                      LetterSpacing="1"
+                                      Margin="4,0,0,4"/>
+                            <Border Background="#15FFFFFF" CornerRadius="10" Padding="12">
+                                <StackPanel x:Name="FractalList" Spacing="6"/>
+                            </Border>
+                        </StackPanel>
+                        
+                        <!-- Statistiques en grille -->
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" Margin="0,5,0,0">
+                            <!-- Zoom -->
+                            <Border Grid.Column="0" Grid.Row="0"
+                                    Background="#15FFFFFF" 
+                                    CornerRadius="10" 
+                                    Padding="12"
+                                    Margin="0,0,5,5">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="ZOOM" 
+                                              FontSize="8" 
+                                              Foreground="#80FFFFFF" 
+                                              FontWeight="Bold" 
+                                              LetterSpacing="1"/>
+                                    <TextBlock x:Name="ZoomText" 
+                                              Text="x 1.00000" 
+                                              FontSize="14" 
+                                              Foreground="White" 
+                                              FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </Border>
+                            
+                            <!-- Statut -->
+                            <Border Grid.Column="1" Grid.Row="0"
+                                    Background="#15FFFFFF" 
+                                    CornerRadius="10" 
+                                    Padding="12"
+                                    Margin="5,0,0,5">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="STATUT" 
+                                              FontSize="8" 
+                                              Foreground="#80FFFFFF" 
+                                              FontWeight="Bold" 
+                                              LetterSpacing="1"/>
+                                    <TextBlock x:Name="GenerationStatusText" 
+                                              Text="Prêt" 
+                                              FontSize="14" 
+                                              Foreground="#64C8FF" 
+                                              FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </Border>
+                            
+                            <!-- Vitesse -->
+                            <Border Grid.Column="0" Grid.Row="1"
+                                    Background="#15FFFFFF" 
+                                    CornerRadius="10" 
+                                    Padding="12"
+                                    Margin="0,5,5,0">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="VITESSE" 
+                                              FontSize="8" 
+                                              Foreground="#80FFFFFF" 
+                                              FontWeight="Bold" 
+                                              LetterSpacing="1"/>
+                                    <TextBlock x:Name="GenerationSpeedText" 
+                                              Text="-- lignes/s" 
+                                              FontSize="14" 
+                                              Foreground="White" 
+                                              FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </Border>
+                            
+                            <!-- Temps restant -->
+                            <Border Grid.Column="1" Grid.Row="1"
+                                    Background="#15FFFFFF" 
+                                    CornerRadius="10" 
+                                    Padding="12"
+                                    Margin="5,5,0,0">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="TEMPS" 
+                                              FontSize="8" 
+                                              Foreground="#80FFFFFF" 
+                                              FontWeight="Bold" 
+                                              LetterSpacing="1"/>
+                                    <TextBlock x:Name="GenerationTimeRemainingText" 
+                                              Text="--" 
+                                              FontSize="14" 
+                                              Foreground="#FFAA00" 
+                                              FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                        
+                        <!-- Centre et Curseur -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="COORDONNÉES COMPLEXES" 
+                                      FontSize="9" 
+                                      Foreground="#80FFFFFF" 
+                                      FontWeight="Bold" 
+                                      LetterSpacing="1"
+                                      Margin="4,0,0,4"/>
+                            <Border Background="#15FFFFFF" CornerRadius="10" Padding="12">
+                                <StackPanel Spacing="10">
+                                    <!-- Centre -->
+                                    <StackPanel Spacing="3">
+                                        <TextBlock Text="Centre" 
+                                                  FontSize="10" 
+                                                  Foreground="#B0FFFFFF" 
+                                                  FontWeight="SemiBold"/>
+                                        <TextBlock x:Name="CenterXText" 
+                                                  Text="-0.50000000" 
+                                                  FontSize="13" 
+                                                  Foreground="#64C8FF"
+                                                  FontFamily="Consolas,monospace"/>
+                                        <TextBlock x:Name="CenterYText" 
+                                                  Text="0.00000000i" 
+                                                  FontSize="13" 
+                                                  Foreground="#64C8FF"
+                                                  FontFamily="Consolas,monospace"/>
+                                    </StackPanel>
+                                    
+                                    <Border Height="1" Background="#20FFFFFF"/>
+                                    
+                                    <!-- Curseur -->
+                                    <StackPanel Spacing="3">
+                                        <TextBlock Text="Curseur" 
+                                                  FontSize="10" 
+                                                  Foreground="#B0FFFFFF" 
+                                                  FontWeight="SemiBold"/>
+                                        <TextBlock x:Name="CursorXText" 
+                                                  Text="0.00000000" 
+                                                  FontSize="13" 
+                                                  Foreground="White"
+                                                  FontFamily="Consolas,monospace"/>
+                                        <TextBlock x:Name="CursorYText" 
+                                                  Text="0.00000000i" 
+                                                  FontSize="13" 
+                                                  Foreground="White"
+                                                  FontFamily="Consolas,monospace"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                        
+                        <!-- Résolution -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="QUALITÉ • Q + 1-5" 
+                                      FontSize="9" 
+                                      Foreground="#80FFFFFF" 
+                                      FontWeight="Bold" 
+                                      LetterSpacing="1"
+                                      Margin="4,0,0,4"/>
+                            <Border Background="#15FFFFFF" CornerRadius="10" Padding="12">
+                                <StackPanel x:Name="QualityList" Spacing="5"/>
+                            </Border>
+                        </StackPanel>
+                        
+                        <!-- Itérations -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="ITÉRATIONS • I + 1-5" 
+                                      FontSize="9" 
+                                      Foreground="#80FFFFFF" 
+                                      FontWeight="Bold" 
+                                      LetterSpacing="1"
+                                      Margin="4,0,0,4"/>
+                            <Border Background="#15FFFFFF" CornerRadius="10" Padding="12">
+                                <StackPanel x:Name="IterationList" Spacing="5"/>
+                            </Border>
+                        </StackPanel>
+                        
+                        <!-- Ligne de séparation -->
+                        <Border Height="1" Background="#30FFFFFF" Margin="0,5"/>
+                        
+                        <!-- Raccourcis clavier -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="RACCOURCIS CLAVIER" 
+                                      FontSize="9" 
+                                      Foreground="#80FFFFFF" 
+                                      FontWeight="Bold" 
+                                      LetterSpacing="1"
+                                      Margin="4,0,0,4"/>
+                            <Border Background="#15FFFFFF" CornerRadius="10" Padding="12">
+                                <StackPanel Spacing="6">
+                                    <Grid ColumnDefinitions="Auto,*">
+                                        <TextBlock Grid.Column="0" Text="F1-F5" FontSize="12" Foreground="#64C8FF" FontWeight="SemiBold" Width="80"/>
+                                        <TextBlock Grid.Column="1" Text="Changer fractale" FontSize="12" Foreground="#C0FFFFFF"/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="Auto,*">
+                                        <TextBlock Grid.Column="0" Text="Q+1-5" FontSize="12" Foreground="#64C8FF" FontWeight="SemiBold" Width="80"/>
+                                        <TextBlock Grid.Column="1" Text="Qualité" FontSize="12" Foreground="#C0FFFFFF"/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="Auto,*">
+                                        <TextBlock Grid.Column="0" Text="I+1-5" FontSize="12" Foreground="#64C8FF" FontWeight="SemiBold" Width="80"/>
+                                        <TextBlock Grid.Column="1" Text="Itérations" FontSize="12" Foreground="#C0FFFFFF"/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="Auto,*">
+                                        <TextBlock Grid.Column="0" Text="+  /  −" FontSize="12" Foreground="#64C8FF" FontWeight="SemiBold" Width="80"/>
+                                        <TextBlock Grid.Column="1" Text="Zoom / Dézoom" FontSize="12" Foreground="#C0FFFFFF"/>
+                                    </Grid>
+                                    
+                                    <Border Height="1" Background="#15FFFFFF" Margin="0,2"/>
+                                    
+                                    <Grid ColumnDefinitions="Auto,*">
+                                        <TextBlock Grid.Column="0" Text="N" FontSize="12" Foreground="#FFAA00" FontWeight="SemiBold" Width="80"/>
+                                        <TextBlock Grid.Column="1" Text="Régénérer" FontSize="12" Foreground="#C0FFFFFF"/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="Auto,*">
+                                        <TextBlock Grid.Column="0" Text="R" FontSize="12" Foreground="#FFAA00" FontWeight="SemiBold" Width="80"/>
+                                        <TextBlock Grid.Column="1" Text="Réinitialiser" FontSize="12" Foreground="#C0FFFFFF"/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="Auto,*">
+                                        <TextBlock Grid.Column="0" Text="C" FontSize="12" Foreground="#FFAA00" FontWeight="SemiBold" Width="80"/>
+                                        <TextBlock Grid.Column="1" Text="Pause / Reprendre" FontSize="12" Foreground="#C0FFFFFF"/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="Auto,*">
+                                        <TextBlock Grid.Column="0" Text="X" FontSize="12" Foreground="#FF5555" FontWeight="SemiBold" Width="80"/>
+                                        <TextBlock Grid.Column="1" Text="Annuler" FontSize="12" Foreground="#C0FFFFFF"/>
+                                    </Grid>
+                                    
+                                    <Border Height="1" Background="#15FFFFFF" Margin="0,2"/>
+                                    
+                                    <Grid ColumnDefinitions="Auto,*">
+                                        <TextBlock Grid.Column="0" Text="Z  /  Y" FontSize="12" Foreground="#88FF88" FontWeight="SemiBold" Width="80"/>
+                                        <TextBlock Grid.Column="1" Text="Undo / Redo" FontSize="12" Foreground="#C0FFFFFF"/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="Auto,*">
+                                        <TextBlock Grid.Column="0" Text="S" FontSize="12" Foreground="#88FF88" FontWeight="SemiBold" Width="80"/>
+                                        <TextBlock Grid.Column="1" Text="Exporter PNG" FontSize="12" Foreground="#C0FFFFFF"/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="Auto,*">
+                                        <TextBlock Grid.Column="0" Text="H" FontSize="12" Foreground="#88FF88" FontWeight="SemiBold" Width="80"/>
+                                        <TextBlock Grid.Column="1" Text="Masquer panel" FontSize="12" Foreground="#C0FFFFFF"/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="Auto,*">
+                                        <TextBlock Grid.Column="0" Text="F11" FontSize="12" Foreground="#88FF88" FontWeight="SemiBold" Width="80"/>
+                                        <TextBlock Grid.Column="1" Text="Plein écran" FontSize="12" Foreground="#C0FFFFFF"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
                     </StackPanel>
-                </StackPanel>
-                
-                <!-- Séparateur -->
-                <Border Height="1" Background="#333333" Margin="0,8,0,8"/>
-                
-                <!-- Section Commandes -->
-                <StackPanel Spacing="5">
-                    <TextBlock Text="COMMANDES" FontSize="10" Foreground="#888888" FontWeight="SemiBold" LetterSpacing="0.5"/>
-                    <StackPanel Spacing="3">
-                        <TextBlock Text="+ / -     Zoom / Dézoom" FontSize="12" Foreground="#CCCCCC"/>
-                        <TextBlock Text="N         Régénérer" FontSize="12" Foreground="#CCCCCC"/>
-                        <TextBlock Text="R         Réinitialiser" FontSize="12" Foreground="#CCCCCC"/>
-                        <TextBlock Text="C         Pause/Reprendre" FontSize="12" Foreground="#CCCCCC"/>
-                        <TextBlock Text="X         Annuler génération" FontSize="12" Foreground="#CCCCCC"/>
-                        <TextBlock Text="Z         Undo (←)" FontSize="12" Foreground="#CCCCCC"/>
-                        <TextBlock Text="Y         Redo (→)" FontSize="12" Foreground="#CCCCCC"/>
-                        <TextBlock Text="S         Exporter PNG" FontSize="12" Foreground="#CCCCCC"/>
-                        <TextBlock Text="H         Masquer/Afficher" FontSize="12" Foreground="#CCCCCC"/>
-                        <TextBlock Text="F11       Plein écran" FontSize="12" Foreground="#CCCCCC"/>
-                    </StackPanel>
-                </StackPanel>
-            </StackPanel>
+                </ScrollViewer>
+            </Border>
         </Border>
     </Grid>
 </UserControl>
